@@ -77,7 +77,7 @@ interface SettingsPanelProps {
   onSettingsChange: (settings: Partial<GlassSettings>) => void;
 }
 
-// Custom minimal slider component
+// Minimal slider component
 function MinimalSlider({
   value,
   min,
@@ -185,25 +185,15 @@ export function SettingsPanel({ settings, onSettingsChange }: SettingsPanelProps
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="group relative h-12 w-12 rounded-2xl 
-                     bg-white/10 backdrop-blur-xl border border-white/20
-                     hover:bg-white/15 hover:border-white/30
-                     transition-all duration-300 ease-out
-                     shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_20px_rgba(255,255,255,0.05)]
-                     hover:shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_30px_rgba(255,255,255,0.1)]"
+          className="group relative h-12 w-12 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-300 ease-out shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_30px_rgba(255,255,255,0.1)]"
         >
-          <Settings className="h-5 w-5 text-white/80 mx-auto group-hover:text-white 
-                               transition-all duration-300 group-hover:rotate-45" />
+          <Settings className="h-5 w-5 text-white/80 mx-auto group-hover:text-white transition-all duration-300 group-hover:rotate-45" />
         </button>
       )}
 
       {/* Settings panel */}
       {isOpen && (
-        <div className="w-72 rounded-2xl overflow-hidden
-                        bg-black/40 backdrop-blur-2xl 
-                        border border-white/[0.06]
-                        shadow-[0_24px_80px_rgba(0,0,0,0.5)]
-                        animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="w-72 rounded-2xl overflow-hidden bg-black/40 backdrop-blur-2xl border border-white/[0.06] shadow-[0_24px_80px_rgba(0,0,0,0.5)] animate-in fade-in slide-in-from-bottom-4 duration-300">
           
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.04]">

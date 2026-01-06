@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { FractalGlassBackground } from "@/components/FractalGlassBackground";
-import { SettingsPanel, GlassSettings } from "@/components/SettingsPanel";
+import { FractalGlassBackground } from "@/components/fractalglass/FractalGlassBackground";
+import { SettingsPanel, GlassSettings } from "@/components/fractalglass/SettingsPanel";
 
 const defaultSettings: GlassSettings = {
   noiseScale: 1.0,
@@ -12,6 +12,8 @@ const defaultSettings: GlassSettings = {
   animationSpeed: 0.1,
   grainIntensity: 0.04,
   contrastBoost: 1.3,
+  waveComplexity: 1,
+  flowIntensity: 1,
   colorDark: "#0a0515",
   colorMid: "#581c87",
   colorBright: "#ec4899",
@@ -35,6 +37,8 @@ export default function FractalGlassPage() {
         animationSpeed={settings.animationSpeed}
         grainIntensity={settings.grainIntensity}
         contrastBoost={settings.contrastBoost}
+        waveComplexity={settings.waveComplexity}
+        flowIntensity={settings.flowIntensity}
         gradientColors={[
           settings.colorDark,
           settings.colorMid,

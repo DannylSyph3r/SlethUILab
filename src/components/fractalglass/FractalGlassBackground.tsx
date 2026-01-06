@@ -37,7 +37,7 @@ const vertexShaderSource = `
   }
 `;
 
-// Fragment shader - FLOWING WAVES like aurora/silk
+// Fragment shader - Aurora/Silk Flowing Wave
 const fragmentShaderSource = `
   precision highp float;
   
@@ -433,7 +433,7 @@ export function FractalGlassBackground({
 
     // Handle resize
     const handleResize = () => {
-      const dpr = Math.min(window.devicePixelRatio, 1.5); // Limit DPR for performance
+      const dpr = Math.min(window.devicePixelRatio, 1.5);
       canvas.width = window.innerWidth * dpr;
       canvas.height = window.innerHeight * dpr;
       canvas.style.width = `${window.innerWidth}px`;
@@ -468,9 +468,9 @@ export function FractalGlassBackground({
       glRef.current = null;
       uniformsRef.current = null;
     };
-  }, []); // Empty deps - initialize only once
+  }, []);
 
-  // Update uniforms when props change (no WebGL recreation!)
+  // Update uniforms when props change
   useEffect(() => {
     const gl = glRef.current;
     const uniforms = uniformsRef.current;
