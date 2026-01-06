@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import * as Slider from "@radix-ui/react-slider";
 import { Settings, X, SlidersHorizontal } from "lucide-react";
 
 export interface GlassSettings {
@@ -77,7 +78,7 @@ interface SettingsPanelProps {
   onSettingsChange: (settings: Partial<GlassSettings>) => void;
 }
 
-// Minimal slider component
+// Minimal slider component using Radix UI
 function MinimalSlider({
   value,
   min,
@@ -93,37 +94,31 @@ function MinimalSlider({
   onChange: (value: number) => void;
   accent?: string;
 }) {
-  const percentage = ((value - min) / (max - min)) * 100;
-
   return (
-    <div className="relative h-6 flex items-center group">
-      <div className="absolute inset-x-0 h-[3px] rounded-full bg-white/[0.08]">
-        <div
-          className="absolute h-full rounded-full transition-all duration-100"
+    <Slider.Root
+      className="relative flex items-center select-none touch-none h-6 group"
+      value={[value]}
+      min={min}
+      max={max}
+      step={step}
+      onValueChange={([v]) => onChange(v)}
+    >
+      <Slider.Track className="relative h-[3px] grow rounded-full bg-white/[0.08]">
+        <Slider.Range
+          className="absolute h-full rounded-full"
           style={{
-            width: `${percentage}%`,
-            background: accent === "white" 
+            background: accent === "white"
               ? "linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.6))"
               : `linear-gradient(90deg, ${accent}66, ${accent})`,
           }}
         />
-      </div>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        onInput={(e) => onChange(parseFloat((e.target as HTMLInputElement).value))}
-        onChange={(e) => onChange(parseFloat(e.target.value))}
-        className="absolute inset-0 w-full opacity-0 cursor-pointer"
+      </Slider.Track>
+      <Slider.Thumb
+        className="block w-3 h-3 rounded-full bg-white shadow-lg shadow-black/30
+                   ring-2 ring-white/20 hover:ring-white/40 focus:ring-white/40
+                   focus:outline-none transition-transform hover:scale-110 focus:scale-110"
       />
-      <div
-        className="absolute w-3 h-3 rounded-full bg-white shadow-lg shadow-black/30 transition-all duration-100
-                   ring-2 ring-white/20 group-hover:ring-white/40 group-hover:scale-110"
-        style={{ left: `calc(${percentage}% - 6px)` }}
-      />
-    </div>
+    </Slider.Root>
   );
 }
 
