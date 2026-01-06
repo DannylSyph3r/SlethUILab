@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import * as Slider from "@radix-ui/react-slider";
 import { Settings, X, SlidersHorizontal } from "lucide-react";
 
@@ -70,6 +70,48 @@ const colorPresets: ColorPreset[] = [
     colorMid: "#86198f",
     colorBright: "#d946ef",
     colorAccent: "#f0abfc",
+  },
+  {
+    name: "Sunset",
+    colorDark: "#1a0a0f",
+    colorMid: "#9d174d",
+    colorBright: "#fb7185",
+    colorAccent: "#fcd34d",
+  },
+  {
+    name: "Forest",
+    colorDark: "#0a1a0f",
+    colorMid: "#166534",
+    colorBright: "#22c55e",
+    colorAccent: "#86efac",
+  },
+  {
+    name: "Midnight",
+    colorDark: "#030712",
+    colorMid: "#1e1b4b",
+    colorBright: "#6366f1",
+    colorAccent: "#c4b5fd",
+  },
+  {
+    name: "Glacier",
+    colorDark: "#0c1929",
+    colorMid: "#155e75",
+    colorBright: "#22d3ee",
+    colorAccent: "#ecfeff",
+  },
+  {
+    name: "Rose",
+    colorDark: "#1a0a10",
+    colorMid: "#881337",
+    colorBright: "#f43f5e",
+    colorAccent: "#fda4af",
+  },
+  {
+    name: "Ember",
+    colorDark: "#1c0a05",
+    colorMid: "#9a3412",
+    colorBright: "#ea580c",
+    colorAccent: "#fed7aa",
   },
 ];
 
@@ -164,7 +206,17 @@ function ControlRow({
 
 export function SettingsPanel({ settings, onSettingsChange }: SettingsPanelProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [activeSection, setActiveSection] = useState<"flow" | "glass" | "color">("flow");
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  const handleClose = useCallback(() => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsOpen(false);
+      setIsClosing(false);
+    }, 200);
+  }, []);
 
   const handlePresetClick = (preset: ColorPreset) => {
     onSettingsChange({
@@ -176,20 +228,38 @@ export function SettingsPanel({ settings, onSettingsChange }: SettingsPanelProps
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
-      {/* Floating trigger button */}
-      {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="group relative h-12 w-12 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-300 ease-out shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_30px_rgba(255,255,255,0.1)]"
-        >
-          <Settings className="h-5 w-5 text-white/80 mx-auto group-hover:text-white transition-all duration-300 group-hover:rotate-45" />
-        </button>
+    <>
+      {/* Backdrop for click-outside-to-close */}
+      {isOpen && (
+        <div
+          className={`fixed inset-0 z-40 transition-opacity duration-200 ${
+            isClosing ? "opacity-0" : "opacity-100"
+          }`}
+          onClick={handleClose}
+        />
       )}
 
+      <div className="fixed bottom-6 right-6 z-50">
+        {/* Floating trigger button */}
+        {!isOpen && (
+          <button
+            onClick={() => setIsOpen(true)}
+            className="group relative h-12 w-12 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-300 ease-out shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_20px_rgba(255,255,255,0.05)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4),0_0_30px_rgba(255,255,255,0.1)]"
+          >
+            <Settings className="h-5 w-5 text-white/80 mx-auto group-hover:text-white transition-all duration-300 group-hover:rotate-45" />
+          </button>
+        )}
+
       {/* Settings panel */}
-      {isOpen && (
-        <div className="w-72 rounded-2xl overflow-hidden bg-black/40 backdrop-blur-2xl border border-white/[0.06] shadow-[0_24px_80px_rgba(0,0,0,0.5)] animate-in fade-in slide-in-from-bottom-4 duration-300">
+        {isOpen && (
+          <div
+            ref={panelRef}
+            className={`w-72 rounded-2xl overflow-hidden bg-black/40 backdrop-blur-2xl border border-white/[0.06] shadow-[0_24px_80px_rgba(0,0,0,0.5)] transition-all duration-200 origin-bottom-right ${
+              isClosing
+                ? "opacity-0 scale-95 translate-y-2"
+                : "opacity-100 scale-100 translate-y-0 animate-in fade-in slide-in-from-bottom-4 duration-300"
+            }`}
+          >
           
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.04]">
@@ -197,13 +267,13 @@ export function SettingsPanel({ settings, onSettingsChange }: SettingsPanelProps
               <SlidersHorizontal className="h-3.5 w-3.5 text-white/40" />
               <span className="text-xs font-medium text-white/70 tracking-wide">Settings</span>
             </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="h-6 w-6 rounded-lg flex items-center justify-center
-                         hover:bg-white/[0.06] transition-colors duration-200"
-            >
-              <X className="h-3.5 w-3.5 text-white/40" />
-            </button>
+              <button
+                onClick={handleClose}
+                className="h-6 w-6 rounded-lg flex items-center justify-center
+                           hover:bg-white/[0.06] transition-colors duration-200"
+              >
+                <X className="h-3.5 w-3.5 text-white/40" />
+              </button>
           </div>
 
           {/* Tab navigation */}
@@ -351,39 +421,43 @@ export function SettingsPanel({ settings, onSettingsChange }: SettingsPanelProps
                   ))}
                 </div>
 
-                {/* Presets */}
-                <div className="pt-2">
-                  <span className="text-[9px] text-white/30 uppercase tracking-wider block mb-3">
-                    Presets
-                  </span>
-                  <div className="grid grid-cols-3 gap-2">
-                    {colorPresets.map((preset) => (
-                      <button
-                        key={preset.name}
-                        onClick={() => handlePresetClick(preset)}
-                        className="group relative h-9 rounded-xl overflow-hidden
-                                   ring-1 ring-white/[0.06] hover:ring-white/[0.15]
-                                   transition-all duration-200 hover:scale-[1.02]"
-                      >
-                        <div
-                          className="absolute inset-0 opacity-80 group-hover:opacity-100 transition-opacity"
-                          style={{
-                            background: `linear-gradient(135deg, ${preset.colorDark}, ${preset.colorMid}, ${preset.colorBright}, ${preset.colorAccent})`,
-                          }}
-                        />
-                        <span className="relative text-[9px] font-medium text-white/90 
-                                         drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
-                          {preset.name}
-                        </span>
-                      </button>
-                    ))}
+                  {/* Presets */}
+                  <div className="pt-2">
+                    <span className="text-[9px] text-white/30 uppercase tracking-wider block mb-3">
+                      Presets
+                    </span>
+                    <div className="grid grid-cols-4 gap-2">
+                      {colorPresets.map((preset) => (
+                        <button
+                          key={preset.name}
+                          onClick={() => handlePresetClick(preset)}
+                          className="group flex flex-col items-center gap-1.5 p-2 rounded-xl
+                                     hover:bg-white/[0.04] transition-all duration-200"
+                        >
+                          {/* Color preview circle */}
+                          <div
+                            className="w-8 h-8 rounded-full ring-1 ring-white/[0.1]
+                                       group-hover:ring-white/[0.25] group-hover:scale-110
+                                       transition-all duration-200 shadow-lg"
+                            style={{
+                              background: `conic-gradient(from 0deg, ${preset.colorDark}, ${preset.colorMid}, ${preset.colorBright}, ${preset.colorAccent}, ${preset.colorDark})`,
+                            }}
+                          />
+                          {/* Preset name */}
+                          <span className="text-[8px] font-medium text-white/50 
+                                           group-hover:text-white/80 transition-colors truncate w-full text-center">
+                            {preset.name}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
               </div>
             )}
           </div>
-        </div>
-      )}
-    </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
